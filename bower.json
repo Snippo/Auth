@@ -1,0 +1,17 @@
+{
+  "name": "App",
+  "dependencies": {
+    "bootstrap": "latest",
+    "angular": "latest",
+    "angular-ui": "latest",
+    "angular-bootstrap": "latest",
+    "ngstorage": "latest",
+    "jquery": "latest",
+    "satellizer": "latest",
+    "ui-router": "latest",
+    "angular-localization": "latest"
+  },
+  "resolutions": {
+    "angular": "1.6.1"
+  }
+}

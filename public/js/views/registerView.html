@@ -1,0 +1,31 @@
+<div ng-controller="RegisterController">
+  <div class="col-sm-4 col-sm-offset-4">
+    <div class="well">
+      <h3>Register</h3>
+      <form name="registerForm">
+        <div ng-if="errorMessage">
+          <p class="text-danger" ng-repeat="item in errorMessage">{{ item[0] }}</p>
+        </div>
+
+        <div class="form-group">
+          <input type="email" class="form-control" placeholder="Email" ng-model="email" required>
+        </div>
+        <div class="form-group">
+          <input type="password" class="form-control"  ng-model="password" placeholder="Password" name="password"required="required" ng-minlength="6"/>
+          <div ng-if="registerForm.password.$touched || signupSubmitted">
+            <p ng-show="registerForm.password.$error.required" class="text-danger">Password is required</p>
+            <p ng-show="registerForm.password.$error.minlength" class="text-danger	">Minimum 6 character</p>
+          </div>
+        </div>
+        <div class="form-group">
+          <input type="password" class="form-control"  name="confirm_password" ng-model="confirm_password" placeholder="Confirm password" match-password="password" required>
+          <div ng-if="registerForm.confirm_password.$touched || signupSubmitted">
+            <p ng-show="registerForm.confirm_password.$error.required" class="text-danger">Confirm password is required</p>
+            <p ng-show="registerForm.confirm_password.$error.matchPassword && !registerForm.confirm_password.$error.required" class="text-danger">Confirm password didn't match</p>
+          </div>
+        </div>
+        <input type="submit" class="btn btn-primary" ng-click="register()"></input>
+      </form>
+    </div>
+  </div>
+</div>
