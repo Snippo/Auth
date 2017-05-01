@@ -10,7 +10,24 @@ var app = angular.module('authApp', ['ui.router', 'satellizer'])
   // are requested other than users
   $urlRouterProvider.otherwise('/home');
 
-  $httpProvider.interceptors.push('authInterceptor');
+  $httpProvider.interceptors.push(['$location', '$injector', '$q', function ($location, $injector, $q) {
+             return {
+                 'responseError': function (rejection) {
+                     if (rejection.status === 401) {
+
+                         //injected manually to get around circular dependency problem.
+                         var AuthService = $injector.get('$auth');
+
+                         //if server returns 401 despite user being authenticated on app side, it means session timed out on server
+                         if (AuthService.isAuthenticated()) {
+                             AuthService.logout();
+                         }
+                         $location.path('/login');
+                         return $q.reject(rejection);
+                     }
+                 }
+             };
+         }]);
 
   $stateProvider
   .state('login', {
@@ -43,22 +60,13 @@ app.run(function ($rootScope, $state, $auth) {
     $rootScope.isAuthenticated = $auth.isAuthenticated();
     if (toState.authenticate && !$auth.isAuthenticated()){
       // User isn’t authenticated
+      $auth.logout()
       $state.go('login');
       event.preventDefault();
     }
   });
 });
 
-app.service('authInterceptor', function($q) {
-    var service = this;
-
-    service.responseError = function(response) {
-        if (response.status == 401){
-            window.location = "/login";
-        }
-        return $q.reject(response);
-    };
-});
 
 app.directive("matchPassword", function () {
     return {
